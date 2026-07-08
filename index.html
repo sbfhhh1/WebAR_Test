@@ -114,9 +114,19 @@
         window.permissionsGranted = IsCameraPermissionGranted();
       }
       initialize();
-      window.addEventListener("load", function () {
-        if ("serviceWorker" in navigator) {
-          navigator.serviceWorker.register("ServiceWorker.js");
+      const buildVersion = "20260708-mobile-wasm-fix";
+      window.addEventListener("load", async function () {
+        try {
+          if ("serviceWorker" in navigator && navigator.serviceWorker.getRegistrations) {
+            const registrations = await navigator.serviceWorker.getRegistrations();
+            await Promise.all(registrations.map((registration) => registration.unregister()));
+          }
+          if ("caches" in window) {
+            const keys = await caches.keys();
+            await Promise.all(keys.map((key) => caches.delete(key)));
+          }
+        } catch (error) {
+          console.warn("Cache cleanup skipped:", error);
         }
       });
       var container = document.querySelector("#unity-container");
@@ -154,15 +164,16 @@
           startARDiv.style.display = "none";
         }, 500);
         var buildUrl = "Build";
-        var loaderUrl = buildUrl + "/build.loader.js";
+        var versionQuery = "?v=" + buildVersion;
+        var loaderUrl = buildUrl + "/build.loader.js" + versionQuery;
         var config = {
-          dataUrl: buildUrl + "/build.data",
-          frameworkUrl: buildUrl + "/build.framework.js",
-          codeUrl: buildUrl + "/build.wasm",
+          dataUrl: buildUrl + "/build.data" + versionQuery,
+          frameworkUrl: buildUrl + "/build.framework.js" + versionQuery,
+          codeUrl: buildUrl + "/build.wasm" + versionQuery,
           streamingAssetsUrl: "StreamingAssets",
           companyName: "DefaultCompany",
           productName: "Imagine WebAR",
-          productVersion: "0.1.0",
+          productVersion: buildVersion,
           showBanner: unityShowBanner,
         };
         // By default Unity keeps WebGL canvas render target size matched with
