@@ -15,6 +15,10 @@
       button:hover { filter: brightness(1.15)}
       button:active { transform: scale(0.95); filter: brightness(0.85)}
       .ctaDiv { display: flex; flex-direction: column; align-items: center; justify-content: center; position: absolute; left: 0; right: 0; top: 0; bottom: 0; background: #2f2e32aa; z-index: 99; transition: 0.5s;}
+      #voicePanel { position: fixed; left: 50%; bottom: max(4vw, 4vh); transform: translateX(-50%); z-index: 80; display: none; flex-direction: column; align-items: center; gap: 8px; pointer-events: none; }
+      #voiceButton { pointer-events: auto; min-width: 150px; height: 48px; padding: 0 24px; border-radius: 999px; color: #fff; background: #1f7affcc; box-shadow: 0 8px 24px rgba(0,0,0,.35); font-size: 16px; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+      #voiceButton.voiceButtonActive { background: #e04444dd; transform: scale(.98); }
+      #voiceStatus { min-height: 20px; max-width: min(86vw, 520px); padding: 4px 10px; border-radius: 10px; background: rgba(0,0,0,.55); color: #fff; font-size: 13px; text-align: center; white-space: normal; overflow-wrap: anywhere; }
       @keyframes spin {
         0%   { transform: translateX(-50%) rotate(0deg); }
         100% { transform: translateX(-50%) rotate(360deg); }
@@ -70,6 +74,10 @@
     <div id="errorDiv" class="ctaDiv" style="display: none; opacity: 0; background-color:#2c2b2f">
         <p id="errorText" style="text-align: center; width:60vw; color:#7f3f3f; font-size: max(3vw, 3vh);"></p>
     </div>
+    <div id="voicePanel">
+      <button id="voiceButton" type="button">按住说话</button>
+      <div id="voiceStatus">说“显示熊 / 显示蝴蝶 / 显示花”切换内容</div>
+    </div>
     <div id="unity-container">
       <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
       <div id="unity-loading-bar">
@@ -82,6 +90,12 @@
     </div>
     <script src="arcamera.js" type="text/javascript"></script>
     <script src="itracker.js" type="text/javascript"></script>
+    <script>
+      window.CLOUDBASE_ENV_ID = window.CLOUDBASE_ENV_ID || "lafa-d8g0hkbkk586278bc";
+      window.CLOUDBASE_REGION = window.CLOUDBASE_REGION || "ap-shanghai";
+      window.XFYUN_AUTH_ENDPOINT = window.XFYUN_AUTH_ENDPOINT || "";
+    </script>
+    <script src="xfyun-voice.js?v=voicefix11-long" type="text/javascript"></script>
     <script>
       // Disable double-tap to zoom
       document.addEventListener('touchstart', function (event) {
@@ -114,19 +128,9 @@
         window.permissionsGranted = IsCameraPermissionGranted();
       }
       initialize();
-      const buildVersion = "20260708-mobile-wasm-fix";
-      window.addEventListener("load", async function () {
-        try {
-          if ("serviceWorker" in navigator && navigator.serviceWorker.getRegistrations) {
-            const registrations = await navigator.serviceWorker.getRegistrations();
-            await Promise.all(registrations.map((registration) => registration.unregister()));
-          }
-          if ("caches" in window) {
-            const keys = await caches.keys();
-            await Promise.all(keys.map((key) => caches.delete(key)));
-          }
-        } catch (error) {
-          console.warn("Cache cleanup skipped:", error);
+      window.addEventListener("load", function () {
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker.register("ServiceWorker.js");
         }
       });
       var container = document.querySelector("#unity-container");
@@ -164,16 +168,15 @@
           startARDiv.style.display = "none";
         }, 500);
         var buildUrl = "Build";
-        var versionQuery = "?v=" + buildVersion;
-        var loaderUrl = buildUrl + "/build.loader.js" + versionQuery;
+        var loaderUrl = buildUrl + "/.deploy-WebAR_Test.loader.js";
         var config = {
-          dataUrl: buildUrl + "/build.data" + versionQuery,
-          frameworkUrl: buildUrl + "/build.framework.js" + versionQuery,
-          codeUrl: buildUrl + "/build.wasm" + versionQuery,
+          dataUrl: buildUrl + "/.deploy-WebAR_Test.data.unityweb",
+          frameworkUrl: buildUrl + "/.deploy-WebAR_Test.framework.js.unityweb",
+          codeUrl: buildUrl + "/.deploy-WebAR_Test.wasm.unityweb",
           streamingAssetsUrl: "StreamingAssets",
           companyName: "DefaultCompany",
           productName: "Imagine WebAR",
-          productVersion: buildVersion,
+          productVersion: "0.1.0",
           showBanner: unityShowBanner,
         };
         // By default Unity keeps WebGL canvas render target size matched with
@@ -199,6 +202,8 @@
             loadingBar.style.display = "none";
             
             window.unityInstance = unityInstance;
+            var voicePanel = document.querySelector("#voicePanel");
+            if (voicePanel) voicePanel.style.display = "flex";
             if(window.permissionsGranted) {
               RequestWebcam();
             }

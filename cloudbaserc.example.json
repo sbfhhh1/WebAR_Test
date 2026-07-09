@@ -1,0 +1,13 @@
+{
+  "envId": "your-cloudbase-env-id",
+  "functionRoot": "cloudfunctions",
+  "functions": [
+    {
+      "name": "xfyunAuth",
+      "runtime": "Nodejs18.15",
+      "handler": "index.main",
+      "timeout": 15,
+      "installDependency": true
+    }
+  ]
+}

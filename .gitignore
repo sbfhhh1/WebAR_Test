@@ -1,0 +1,7 @@
+*.zip
+*.log
+*.tmp
+*.bak
+cloudbaserc.json
+xfyun-local-config.js
+Imagine WebAR_BurstDebugInformation_DoNotShip/
