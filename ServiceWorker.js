@@ -1,4 +1,4 @@
-const cacheName = "DefaultCompany-Imagine WebAR-0.1.0" + "-voicefix11-long";
+const cacheName = "DefaultCompany-Imagine WebAR-0.1.0" + "-voicefix11-button-label";
 const contentToCache = [
     "Build/.deploy-WebAR_Test.loader.js",
     "Build/.deploy-WebAR_Test.framework.js.unityweb",

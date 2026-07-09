@@ -19,7 +19,7 @@ tcb hosting deploy .deploy-WebAR_Test lafa-web-ar -e lafa-d8g0hkbkk586278bc
 Use a version query string after each frontend change:
 
 ```text
-https://lafa-d8g0hkbkk586278bc-1302628121.tcloudbaseapp.com/lafa-web-ar/?v=voicefix11-long
+https://lafa-d8g0hkbkk586278bc-1302628121.tcloudbaseapp.com/lafa-web-ar/?v=voicefix11-button-label
 ```
 
 Keep `ServiceWorker.js` cache names in sync with script versions. When behavior looks stale in WeChat, bump both:
@@ -54,10 +54,25 @@ Frontend should call the function or a public HTTP route and then open the retur
 ## Voice Frontend Lessons
 
 - WeChat WebView can fire `touchcancel` very early. A long-press button must protect against too-short recordings.
-- `voicefix11-long` adds a 900 ms minimum recording window before stopping.
+- `voicefix11-button-label` keeps the button label in a CSS pseudo-element to avoid Android WeChat text-selection hijacking during center long-press.
 - A debug string like `帧:6 回:1 音:0.00` means the microphone was opened but no meaningful PCM amplitude reached the encoder.
 - Keep the voice panel hidden until `createUnityInstance(...).then(...)` completes, so the button does not appear during Unity loading.
 - Browser DOM UI is preferred for microphone permission and WebSocket state. Unity UI can style or mirror state, but WebGL microphone access still goes through browser JavaScript.
+
+## WeChat Image Target Saving
+
+- WeChat WebView does not reliably support direct file downloads from `<a download>`.
+- Keep normal browser behavior as a real download.
+- In WeChat, show the generated target image in a fullscreen overlay and instruct the user to long-press the image and choose save.
+- The WebGL bridge is implemented in `Assets/Imagine/Common/Plugins/DownloadTexture.jslib` before rebuilding, then compiled into `Build/.deploy-WebAR_Test.framework.js.unityweb`.
+- Do not route users to an external browser for this flow unless the user explicitly wants a raw file download.
+
+## Touch Model Rotation
+
+- Single-finger horizontal drag rotates the currently visible model around its local vertical axis.
+- Preserve authored scene transforms. Apply only incremental runtime rotation; do not reset position, rotation, or scale when switching models.
+- Ignore the bottom-center voice button area so swiping and long-press speech do not fight each other.
+- Add light inertia after release for a more natural product-view feel.
 
 ## Unity Voice Command Controller
 

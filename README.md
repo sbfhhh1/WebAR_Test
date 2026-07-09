@@ -12,6 +12,8 @@ Current public test path:
 - WebAR template files: `index.html`, `arcamera.js`, `itracker.js`, `opencv.js`
 - Image targets in `targets/`
 - Speech recognition frontend bridge in `xfyun-voice.js`
+- WeChat-friendly target image saving: preview and long-press save in WeChat, direct download in standard browsers
+- Runtime single-finger model rotation with inertia after image target tracking
 - CloudBase function sample for XFYUN WebSocket auth in `cloudfunctions/xfyunAuth/`
 - Technical notes in `docs/TECHNICAL_NOTES.md`
 

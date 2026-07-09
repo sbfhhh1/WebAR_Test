@@ -16,7 +16,8 @@
       button:active { transform: scale(0.95); filter: brightness(0.85)}
       .ctaDiv { display: flex; flex-direction: column; align-items: center; justify-content: center; position: absolute; left: 0; right: 0; top: 0; bottom: 0; background: #2f2e32aa; z-index: 99; transition: 0.5s;}
       #voicePanel { position: fixed; left: 50%; bottom: max(4vw, 4vh); transform: translateX(-50%); z-index: 80; display: none; flex-direction: column; align-items: center; gap: 8px; pointer-events: none; }
-      #voiceButton { pointer-events: auto; min-width: 150px; height: 48px; padding: 0 24px; border-radius: 999px; color: #fff; background: #1f7affcc; box-shadow: 0 8px 24px rgba(0,0,0,.35); font-size: 16px; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+      #voiceButton { pointer-events: auto; min-width: 150px; height: 48px; padding: 0 24px; border-radius: 999px; color: #fff; background: #1f7affcc; box-shadow: 0 8px 24px rgba(0,0,0,.35); font-size: 0; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+      #voiceButton::before { content: attr(data-label); font-size: 16px; font-weight: bold; color: #fff; pointer-events: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
       #voiceButton.voiceButtonActive { background: #e04444dd; transform: scale(.98); }
       #voiceStatus { min-height: 20px; max-width: min(86vw, 520px); padding: 4px 10px; border-radius: 10px; background: rgba(0,0,0,.55); color: #fff; font-size: 13px; text-align: center; white-space: normal; overflow-wrap: anywhere; }
       @keyframes spin {
@@ -75,7 +76,7 @@
         <p id="errorText" style="text-align: center; width:60vw; color:#7f3f3f; font-size: max(3vw, 3vh);"></p>
     </div>
     <div id="voicePanel">
-      <button id="voiceButton" type="button">按住说话</button>
+      <button id="voiceButton" type="button" aria-label="按住说话" data-label="按住说话"></button>
       <div id="voiceStatus">说“显示熊 / 显示蝴蝶 / 显示花”切换内容</div>
     </div>
     <div id="unity-container">
@@ -95,7 +96,7 @@
       window.CLOUDBASE_REGION = window.CLOUDBASE_REGION || "ap-shanghai";
       window.XFYUN_AUTH_ENDPOINT = window.XFYUN_AUTH_ENDPOINT || "";
     </script>
-    <script src="xfyun-voice.js?v=voicefix11-long" type="text/javascript"></script>
+    <script src="xfyun-voice.js?v=voicefix11-button-label" type="text/javascript"></script>
     <script>
       // Disable double-tap to zoom
       document.addEventListener('touchstart', function (event) {
