@@ -10,16 +10,296 @@
     <link rel="manifest" href="manifest.webmanifest">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
     <style>
+      html, body {
+        width: 100%;
+        height: 100%;
+        min-height: 100vh;
+        min-height: 100dvh;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+        background: #000;
+        position: fixed;
+        inset: 0;
+        touch-action: none;
+      }
       body { font-family: 'Roboto', sans-serif; letter-spacing: 0.05em; font-size: max(2vw, 2vh); color:white}
+      #unity-container,
+      #unity-canvas,
+      #video-canvas {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        max-width: none !important;
+        max-height: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      #unity-container { overflow: hidden !important; }
+      #unity-canvas,
+      #video-canvas {
+        object-fit: cover !important;
+        display: block !important;
+      }
       button {height:max(5vw, 5vh);font-size: max(2vw, 2vh);font-weight: bold; border-radius: max(1.5vw, 1.5vh); padding-left: max(5vw, 5vh); padding-right: max(5vw, 5vh); border: 0; color: #62a7fe; background: #3d3d3d; transition:0.1s;user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; }
       button:hover { filter: brightness(1.15)}
       button:active { transform: scale(0.95); filter: brightness(0.85)}
       .ctaDiv { display: flex; flex-direction: column; align-items: center; justify-content: center; position: absolute; left: 0; right: 0; top: 0; bottom: 0; background: #2f2e32aa; z-index: 99; transition: 0.5s;}
-      #voicePanel { position: fixed; left: 50%; bottom: max(4vw, 4vh); transform: translateX(-50%); z-index: 80; display: none; flex-direction: column; align-items: center; gap: 8px; pointer-events: none; }
-      #voiceButton { pointer-events: auto; min-width: 150px; height: 48px; padding: 0 24px; border-radius: 999px; color: #fff; background: #1f7affcc; box-shadow: 0 8px 24px rgba(0,0,0,.35); font-size: 0; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
-      #voiceButton::before { content: attr(data-label); font-size: 16px; font-weight: bold; color: #fff; pointer-events: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
-      #voiceButton.voiceButtonActive { background: #e04444dd; transform: scale(.98); }
-      #voiceStatus { min-height: 20px; max-width: min(86vw, 520px); padding: 4px 10px; border-radius: 10px; background: rgba(0,0,0,.55); color: #fff; font-size: 13px; text-align: center; white-space: normal; overflow-wrap: anywhere; }
+      #startARDiv { display: none !important; }
+            body > #unity-loading-bar.customLoadingScreen {
+        position: fixed !important;
+        inset: 0 !important;
+        z-index: 120 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        display: none;
+        overflow: hidden !important;
+        background: #efe4d0 !important;
+      }
+            #unity-loading-bar.customLoadingScreen::before,
+      #unity-loading-bar.customLoadingScreen::after {
+        display: none !important;
+        content: none !important;
+      }
+      #loading-bg {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        object-fit: fill !important;
+        display: block !important;
+        max-width: none !important;
+        max-height: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: 0 !important;
+        z-index: 0;
+        pointer-events: none;
+      }
+            body > #unity-loading-bar.customLoadingScreen {
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+        right: auto !important;
+        bottom: auto !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        min-width: 100vw !important;
+        min-height: 100vh !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        transform: none !important;
+        overflow: hidden !important;
+        background: #efe4d0 !important;
+        z-index: 2147483600 !important;
+      }
+      body > #unity-loading-bar.customLoadingScreen > #loading-bg {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        min-width: 100vw !important;
+        min-height: 100vh !important;
+        object-fit: fill !important;
+      }
+      #unity-logo { display: none !important; }
+      #unity-progress-bar-empty {
+        --color-1: rgba(255, 251, 243, .92);
+        --color-2: #b98842;
+        --size: 1.57px;
+        z-index: 2;
+        position: absolute;
+        left: 50%;
+        bottom: clamp(86px, 15vh, 156px);
+        transform: translateX(-50%);
+        width: calc(48 * var(--size));
+        height: calc(48 * var(--size));
+        border-radius: 50%;
+        display: inline-block;
+        border-top: calc(4 * var(--size)) solid var(--color-1);
+        border-right: calc(4 * var(--size)) solid transparent;
+        background: rgba(185, 136, 66, .12);
+        box-shadow: 0 16px 42px rgba(111, 80, 37, .22), inset 0 0 0 1px rgba(185, 136, 66, .18);
+        overflow: visible;
+        box-sizing: border-box;
+        animation: rotation 1s linear infinite;
+      }
+      #unity-progress-bar-empty::before {
+        display: none !important;
+        content: none !important;
+      }
+      #unity-progress-bar-empty::after {
+        content: "";
+        box-sizing: border-box;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: calc(48 * var(--size));
+        height: calc(48 * var(--size));
+        border-radius: 50%;
+        border-left: calc(4 * var(--size)) solid var(--color-2);
+        border-bottom: calc(4 * var(--size)) solid transparent;
+        animation: rotationInner 0.5s linear infinite reverse;
+      }
+      #unity-progress-bar-full {
+        display: none !important;
+      }
+      #unity-progress-percent {
+        position: absolute;
+        left: 50%;
+        bottom: calc(clamp(86px, 15vh, 156px) + 37.7px);
+        transform: translate(-50%, 50%) !important;
+        color: #8f6232;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: .04em;
+        white-space: nowrap;
+        text-shadow: 0 1px 0 rgba(255,255,255,.55);
+        animation: none !important;
+        z-index: 3;
+      }
+      @keyframes rotation {
+        0% { transform: translateX(-50%) rotate(0deg); }
+        100% { transform: translateX(-50%) rotate(360deg); }
+      }
+      @keyframes rotationInner {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      #voicePanel {
+        position: fixed !important;
+        left: 50%;
+        bottom: max(4vw, 4vh);
+        transform: translateX(-50%);
+        z-index: 2147483647;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        pointer-events: none;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-touch-callout: none;
+        width: auto !important;
+        height: auto !important;
+      }
+                  #voiceButton {
+        pointer-events: auto;
+        width: 86px;
+        min-width: 86px;
+        height: 86px;
+        padding: 0;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 244, 224, .78);
+        color: transparent;
+        background: #b98842;
+        box-shadow: 0 12px 26px rgba(0,0,0,.32);
+        font-size: 0;
+        touch-action: none;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-touch-callout: none;
+        -webkit-tap-highlight-color: transparent;
+        position: relative;
+        z-index: 2147483647;
+        transition: transform .12s ease, background-color .12s ease, box-shadow .12s ease;
+      }
+      #voiceButton::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 26px;
+        height: 38px;
+        transform: translate(-50%, -60%);
+        border: 7px solid #fff8ea;
+        border-radius: 18px;
+        box-sizing: border-box;
+        pointer-events: none;
+      }
+      #voiceButton::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 44px;
+        height: 34px;
+        transform: translate(-50%, -22%);
+        border: 7px solid #fff8ea;
+        border-top: 0;
+        border-radius: 0 0 28px 28px;
+        box-sizing: border-box;
+        pointer-events: none;
+      }
+      #voiceButton .voiceStem {
+        position: absolute;
+        left: 50%;
+        top: calc(50% + 23px);
+        width: 7px;
+        height: 18px;
+        transform: translateX(-50%);
+        border-radius: 999px;
+        background: #fff8ea;
+        pointer-events: none;
+      }
+      #voiceButton .voicePulse {
+        position: absolute;
+        inset: -8px;
+        border-radius: 50%;
+        border: 2px solid rgba(219, 54, 48, .5);
+        opacity: 0;
+        pointer-events: none;
+      }
+            #voiceButton.voiceButtonActive {
+        background: #df3f4a;
+        transform: scale(.94);
+        box-shadow: 0 0 0 9px rgba(223, 63, 74, .18), 0 12px 26px rgba(0,0,0,.32);
+      }
+      #voiceButton.voiceButtonActive .voicePulse {
+        animation: voicePulse 1s ease-out infinite;
+      }
+            #voiceButton.voiceButtonProcessing {
+        background: #9f773a;
+        box-shadow: 0 0 0 7px rgba(185, 136, 66, .14), 0 12px 26px rgba(0,0,0,.32);
+      }
+      #voiceButton.voiceButtonProcessing::before,
+      #voiceButton.voiceButtonProcessing::after,
+      #voiceButton.voiceButtonProcessing .voiceStem {
+        opacity: .68;
+      }
+      #voiceButton.voiceButtonProcessing .voicePulse {
+        opacity: .35;
+        animation: voiceProcessing 1.1s linear infinite;
+      }
+      #voiceStatus {
+        min-height: 20px;
+        max-width: min(78vw, 420px);
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: rgba(29,20,13,.38);
+        color: rgba(255,248,234,.88);
+        font-size: 12px;
+        text-align: center;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        opacity: .78;
+      }
+      @keyframes voicePulse {
+        0% { transform: scale(.78); opacity: .72; }
+        100% { transform: scale(1.42); opacity: 0; }
+      }
+      @keyframes voiceProcessing {
+        0% { transform: rotate(0deg); opacity: .5; }
+        100% { transform: rotate(360deg); opacity: .5; }
+      }
       @keyframes spin {
         0%   { transform: translateX(-50%) rotate(0deg); }
         100% { transform: translateX(-50%) rotate(360deg); }
@@ -75,18 +355,23 @@
     <div id="errorDiv" class="ctaDiv" style="display: none; opacity: 0; background-color:#2c2b2f">
         <p id="errorText" style="text-align: center; width:60vw; color:#7f3f3f; font-size: max(3vw, 3vh);"></p>
     </div>
-    <div id="voicePanel">
-      <button id="voiceButton" type="button" aria-label="按住说话" data-label="按住说话"></button>
-      <div id="voiceStatus">说“显示熊 / 显示蝴蝶 / 显示花”切换内容</div>
+        <div id="voicePanel">
+      <button id="voiceButton" type="button" aria-label="&#25353;&#20303;&#35828;&#35805;" data-label="&#25353;&#20303;&#35828;&#35805;">
+        <span class="voicePulse"></span>
+        <span class="voiceStem"></span>
+      </button>
+      <div id="voiceStatus">&#38271;&#25353;&#35828;&#8220;&#29983;&#25104;...&#8221;&#21019;&#24314;&#22270;&#29255;</div>
+    </div>
+    <div id="unity-loading-bar" class="customLoadingScreen">
+      <img id="loading-bg" src="main.png" alt="" draggable="false">
+      <div id="unity-logo"></div>
+      <div id="unity-progress-bar-empty">
+        <div id="unity-progress-bar-full"></div>
+      </div>
+      <div id="unity-progress-percent">0%</div>
     </div>
     <div id="unity-container">
       <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
-      <div id="unity-loading-bar">
-        <div id="unity-logo"></div>
-        <div id="unity-progress-bar-empty">
-          <div id="unity-progress-bar-full"></div>
-        </div>
-      </div>
       <div id="unity-warning"> </div>
     </div>
     <script src="arcamera.js" type="text/javascript"></script>
@@ -95,8 +380,15 @@
       window.CLOUDBASE_ENV_ID = window.CLOUDBASE_ENV_ID || "lafa-d8g0hkbkk586278bc";
       window.CLOUDBASE_REGION = window.CLOUDBASE_REGION || "ap-shanghai";
       window.XFYUN_AUTH_ENDPOINT = window.XFYUN_AUTH_ENDPOINT || "";
+      window.XFYUN_ALLOW_BROWSER_SIGNING = false;
+      window.XFYUN_DIRECT_APP_ID = window.XFYUN_DIRECT_APP_ID || "";
+      window.XFYUN_DIRECT_API_KEY = window.XFYUN_DIRECT_API_KEY || "";
+      window.XFYUN_DIRECT_API_SECRET = window.XFYUN_DIRECT_API_SECRET || "";
+      window.COMFY_SUBMIT_ENDPOINT = window.COMFY_SUBMIT_ENDPOINT || "";
+      window.COMFY_STATUS_ENDPOINT = window.COMFY_STATUS_ENDPOINT || "";
     </script>
-    <script src="xfyun-voice.js?v=voicefix11-button-label" type="text/javascript"></script>
+    <script src="comfyui-config.js?v=comfygen27-small-spinner" type="text/javascript"></script>
+    <script src="xfyun-voice.js?v=comfygen27-small-spinner" type="text/javascript"></script>
     <script>
       // Disable double-tap to zoom
       document.addEventListener('touchstart', function (event) {
@@ -108,6 +400,42 @@
       document.addEventListener('gesturestart', function (event) {
         event.preventDefault();
       });
+      var container = document.querySelector("#unity-container");
+      var canvas = document.querySelector("#unity-canvas");
+      var loadingBar = document.querySelector("#unity-loading-bar");
+      var progressBarFull = document.querySelector("#unity-progress-bar-full");
+      var progressPercent = document.querySelector("#unity-progress-percent");
+      var loadingStartedAt = Date.now();
+      var fakeLoadingProgress = 0;
+      var fakeLoadingTimer = null;
+      function setLoadingProgress(value) {
+        var shownProgress = Math.max(0, Math.min(100, Math.round(value)));
+        if (progressBarFull) progressBarFull.style.width = shownProgress + "%";
+        if (progressPercent) progressPercent.textContent = shownProgress + "%";
+      }
+      function startLoadingScreen() {
+        if (!loadingBar) return;
+        loadingStartedAt = Date.now();
+        fakeLoadingProgress = Math.max(fakeLoadingProgress, 2);
+        loadingBar.style.display = "block";
+        setLoadingProgress(fakeLoadingProgress);
+        if (fakeLoadingTimer) clearInterval(fakeLoadingTimer);
+        fakeLoadingTimer = setInterval(function(){
+          if (fakeLoadingProgress < 88) {
+            fakeLoadingProgress += fakeLoadingProgress < 35 ? 4 : 2;
+            setLoadingProgress(fakeLoadingProgress);
+          }
+        }, 160);
+      }
+      function finishLoadingScreen() {
+        if (fakeLoadingTimer) clearInterval(fakeLoadingTimer);
+        fakeLoadingTimer = null;
+        setLoadingProgress(100);
+        var hideLoading = function(){ loadingBar.style.display = "none"; };
+        var elapsedLoading = Date.now() - loadingStartedAt;
+        setTimeout(hideLoading, Math.max(0, 2200 - elapsedLoading));
+      }
+      startLoadingScreen();
       var initialize = async() =>{
         var unityCanvas = document.querySelector("#unity-canvas");
         var videoCanvas = document.querySelector("#video-canvas");
@@ -124,20 +452,34 @@
         }
         await LoadWebcams();
         
-        document.getElementById("startARButton").style.visibility = "visible";
-        document.getElementById("spinner").style.visibility = "hidden";
-        window.permissionsGranted = IsCameraPermissionGranted();
+        window.permissionsGranted = await IsCameraPermissionGranted();
+        StartAR();
       }
       initialize();
-      window.addEventListener("load", function () {
+            window.addEventListener("error", function(event) {
+        var msg = String((event && (event.message || event.error)) || "");
+        var src = String((event && event.filename) || "");
+        if (msg.indexOf("6780040") !== -1 || src.indexOf("opencv.js") !== -1) {
+          console.warn("Suppressed transient iTracker/OpenCV error:", msg, src);
+          event.preventDefault();
+          return true;
+        }
+      }, true);
+      window.onerror = function(message, source) {
+        var msg = String(message || "");
+        var src = String(source || "");
+        if (msg.indexOf("6780040") !== -1 || src.indexOf("opencv.js") !== -1) {
+          console.warn("Suppressed transient iTracker/OpenCV error:", msg, src);
+          return true;
+        }
+        return false;
+      };
+
+            window.addEventListener("load", function () {
         if ("serviceWorker" in navigator) {
-          navigator.serviceWorker.register("ServiceWorker.js");
+          navigator.serviceWorker.getRegistrations().then((regs) => regs.forEach((reg) => reg.unregister()));
         }
       });
-      var container = document.querySelector("#unity-container");
-      var canvas = document.querySelector("#unity-canvas");
-      var loadingBar = document.querySelector("#unity-loading-bar");
-      var progressBarFull = document.querySelector("#unity-progress-bar-full");
       var warningBanner = document.querySelector("#unity-warning");
       // Shows a temporary message banner/ribbon for a few seconds, or
       // a permanent error message on top of the canvas if type=='error'.
@@ -193,22 +535,26 @@
           meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
           document.getElementsByTagName('head')[0].appendChild(meta);
         }
-        loadingBar.style.display = "block";
+        startLoadingScreen();
         var script = document.createElement("script");
         script.src = loaderUrl;
         script.onload = () => {
           createUnityInstance(canvas, config, (progress) => {
-            progressBarFull.style.width = 100 * progress + "%";
+            fakeLoadingProgress = Math.max(fakeLoadingProgress, progress * 100);
+            setLoadingProgress(fakeLoadingProgress);
           }).then((unityInstance) => {
-            loadingBar.style.display = "none";
-            
+                        finishLoadingScreen();
+
             window.unityInstance = unityInstance;
             var voicePanel = document.querySelector("#voicePanel");
             if (voicePanel) voicePanel.style.display = "flex";
-            if(window.permissionsGranted) {
-              RequestWebcam();
-            }
+            RequestWebcam();
           }).catch((message) => {
+            var text = String(message || "");
+            if (text.indexOf("6780040") !== -1 || text.indexOf("opencv.js") !== -1) {
+              console.warn("Suppressed transient iTracker/OpenCV runtime error:", text);
+              return;
+            }
             alert(message);
           });
         };
@@ -220,28 +566,33 @@
           video: {
               facingMode: unityFacingMode,
           },
-          audio: false
+          audio: true
       };
       window.requestingForPermissions = false;
+      window.preGrantedAudioStream = null;
       async function RequestWebcam(){
           window.requestingForPermissions = true;
           try{
               window.webcamStream = await navigator.mediaDevices.getUserMedia(window.WEBCAM_SETTINGS);
-              console.log("Webcam access granted");
+              console.log("Webcam and microphone access granted");
+              var audioTracks = window.webcamStream.getAudioTracks ? window.webcamStream.getAudioTracks() : [];
+              if (audioTracks.length) window.preGrantedAudioStream = new MediaStream(audioTracks);
               requestingForPermissions = false;
-              // Immediately stop the stream to release the camera
+              // Release the camera preview stream now, but keep the audio permission stream for voice input reuse.
               StopWebcam();
           }
           catch (err) {
               //user denied camera permission - show error panel
               console.error("getUserMedia error - " , err);
-              ShowError("Failed to start the experience. Camera permission was denied");
+              ShowError("???????????????????");
               window.requestingForPermissions = false;
           }           
       }
       function StopWebcam(){
           console.log("stopping camera");
-          window.webcamStream.getTracks().forEach(track => track.stop());    
+          if (!window.webcamStream) return;
+          window.webcamStream.getVideoTracks().forEach(track => track.stop());
+          // Keep audio tracks alive in window.preGrantedAudioStream so the record button does not trigger another permission prompt.
       }
       async function StartWebcam(){
           console.log("StartWebcam")

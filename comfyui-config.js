@@ -1,0 +1,24 @@
+(function () {
+  window.COMFY_SETTINGS_VERSION = "comfygen23-progress-visible";
+  window.CLOUDBASE_ENV_ID = window.CLOUDBASE_ENV_ID || "lafa-d8g0hkbkk586278bc";
+  window.CLOUDBASE_REGION = window.CLOUDBASE_REGION || "ap-shanghai";
+  window.COMFY_SUBMIT_FUNCTION = "comfySubmit";
+  window.COMFY_STATUS_FUNCTION = "comfyStatus";
+  window.COMFY_DIRECT_BASE_URL = "https://977qqnuu43t86uzs-80.container.x-gpu.com";
+  window.COMFY_FALLBACK_TO_DIRECT = true;
+  window.COMFY_DIRECT_FIRST = true;
+  window.COMFY_WORKFLOW_JSON_URL = "sent2unity.json";
+  window.COMFY_CHECKPOINT_NAME = "SD1.5_dreamshaper_8.safetensors";
+  window.COMFY_PROMPT_TEMPLATE = "{prompt}, 3D clay toy render, cute small animal, full body, single subject, product render, object only, no human, no face, no portrait, no bust, no statue, high quality, detailed";
+  window.COMFY_NEGATIVE_PROMPT = "human, person, portrait, bust, statue, sculpture, head, face, mask, mannequin, beautiful woman, anime girl, female, woman, girl, man, boy, body, skin, eyes, lips, hair, selfie, text, watermark, logo, signature, low quality, worst quality";
+  window.COMFY_WIDTH = 512;
+  window.COMFY_HEIGHT = 512;
+  window.COMFY_SEED_MODE = "Random";
+  window.COMFY_FIXED_SEED = 156680208;
+  window.COMFY_STEPS = 20;
+  window.COMFY_CFG = 8;
+  window.COMFY_SAMPLER_NAME = "euler";
+  window.COMFY_SCHEDULER = "normal";
+  window.COMFY_POLL_INTERVAL_MS = 2000;
+  window.COMFY_TIMEOUT_MS = 120000;
+})();

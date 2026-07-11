@@ -1,10 +1,12 @@
-const cacheName = "DefaultCompany-Imagine WebAR-0.1.0" + "-voicefix11-button-label";
+const cacheName = "DefaultCompany-Imagine WebAR-0.1.0" + "-comfygen27-small-spinner";
 const contentToCache = [
     "Build/.deploy-WebAR_Test.loader.js",
     "Build/.deploy-WebAR_Test.framework.js.unityweb",
     "Build/.deploy-WebAR_Test.data.unityweb",
     "Build/.deploy-WebAR_Test.wasm.unityweb",
-    "TemplateData/style.css"
+    "TemplateData/style.css",
+    "comfyui-config.js",
+    "xfyun-voice.js"
 
 ];
 
