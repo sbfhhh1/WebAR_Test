@@ -1,4 +1,4 @@
-const cacheName = "DefaultCompany-Imagine WebAR-0.1.0" + "-comfygen27-small-spinner";
+const cacheName = "DefaultCompany-Imagine WebAR-0.1.0" + "-comfygen28-main-cache";
 const contentToCache = [
     "Build/.deploy-WebAR_Test.loader.js",
     "Build/.deploy-WebAR_Test.framework.js.unityweb",
