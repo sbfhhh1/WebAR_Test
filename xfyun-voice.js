@@ -3,7 +3,7 @@
   const FRAME_SIZE = 1280;
   const FINAL_RESULT_TIMEOUT_MS = 8000;
   const MIN_RECORDING_MS = 900;
-  const VOICE_VERSION = "comfygen28-main-cache";
+  const VOICE_VERSION = "comfygen29-startup-bg";
 
   const USE_DIRECT_XFYUN_AUTH = window.XFYUN_ALLOW_BROWSER_SIGNING === true;
   const DIRECT_XFYUN_APP_ID = window.XFYUN_DIRECT_APP_ID || "";
